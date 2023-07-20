@@ -29,13 +29,50 @@ const Customizer = () => {
       case 'colorpicker':
         return <ColorPicker />;
       case 'filepicker':
-        return <FilePicker />;
+        return (
+          <FilePicker
+            file={file}
+            setFile={setFile}
+            readFile={readFile}
+          />);
       case 'aipicker':
         return <AIPicker />;
 
       default:
         return null;
     }
+  }
+
+  const handleDecals = (type, result) => {
+    const decalType = DecalTypes[type];
+
+    state[decalType.stateProperty] = result;
+
+    if(!activeFilterTab[decalType.filterTab]) {
+      handleActiveFilterTab(decalType.filterTab);
+    }
+  }
+
+  const handleActiveFilterTab = (filterTab) => {
+    switch (filterTab) {
+      case 'logoShirt':
+        state.isLogoTexture = !activeFilterTab[filterTab];
+        break;
+      case 'stylishShirt':
+        state.isFullTexture = !activeFilterTab[filterTab];
+        break;
+      default:
+        state.isFullTexture = true;
+        state.isLogoTexture = false;
+    }
+  }
+
+  const readFile = (type) => {
+    reader(file)
+      .then((result) => {
+        handleDecals(type, result);
+        setActiveEditorTab('');
+      })
   }
   
   return (
